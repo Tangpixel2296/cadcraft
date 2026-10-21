@@ -301,6 +301,8 @@ pub fn keyboard(app: &mut CadApp, ctx: &egui::Context) {
                 } else {
                     app.cmd.buffer.push_str(&t);
                     app.cmd.suggestion = 0;
+                    // Editing a recalled command leaves the history: AutoComplete applies again.
+                    app.cmd.history_pos = None;
                 }
             }
             egui::Event::Key { key, pressed: true, repeat, modifiers, .. } => match key {
@@ -324,6 +326,7 @@ pub fn keyboard(app: &mut CadApp, ctx: &egui::Context) {
                     } else {
                         app.cmd.buffer.pop();
                         app.cmd.suggestion = 0;
+                        app.cmd.history_pos = None;
                     }
                 }
                 Key::ArrowUp if !modifiers.any() && suggesting(app) => {
